@@ -2,10 +2,26 @@
 
 using namespace std;
 
-class account
+class I_printable
 {
-    friend ostream& operator<<(ostream& os, const account &acc);
+    friend ostream& operator<<(ostream&os, const I_printable &obj);
 public:
+    virtual void print(std::ostream& os) const = 0;
+};
+
+ostream& operator<<(ostream& os, const I_printable &obj)
+{
+    obj.print(os);
+    return os;
+}
+
+class account : public I_printable
+{
+public:
+    virtual void print(std::ostream& os) const override
+    {
+        os<<"Account display"<<endl;
+    }
     virtual void withdraw(double amount)
     {
         cout<<"In account::withdraw"<<endl;
@@ -16,16 +32,13 @@ public:
     }
 };
 
-ostream& operator<<(ostream& os, const account &acc)
-{
-    os<<"Account display"<<endl;
-    return os;
-}
-
 class checking: public account
 {
-    friend ostream& operator<<(ostream& os, const checking &acc);
 public:
+    virtual void print(std::ostream& os) const override
+    {
+        os<<"checking display"<<endl;
+    }
     virtual void withdraw(double amount)
     {
         cout<<"In checking::withdraw"<<endl;
@@ -36,16 +49,13 @@ public:
     }
 };
 
-ostream& operator<<(ostream& os, const checking &acc)
-{
-    os<<"checking display"<<endl;
-    return os;
-}
-
 class savings: public account
 {
-    friend ostream& operator<<(ostream& os, const savings &acc);
 public:
+    virtual void print(std::ostream& os) const override
+    {
+        os<<"savings display"<<endl;
+    }
     virtual void withdraw(double amount)
     {
         cout<<"In savings::withdraw"<<endl;
@@ -56,16 +66,13 @@ public:
     }
 };
 
-ostream& operator<<(ostream& os, const savings &acc)
-{
-    os<<"savings display"<<endl;
-    return os;
-}
-
 class trust: public account
 {
-    friend ostream& operator<<(ostream& os, const trust &acc);
 public:
+    virtual void print(std::ostream& os) const override
+    {
+        os<<"trust display"<<endl;
+    }
     virtual void withdraw(double amount)
     {
         cout<<"In trust::withdraw"<<endl;
@@ -76,10 +83,22 @@ public:
     }
 };
 
-ostream& operator<<(ostream& os, const trust &acc)
+class dog : public account
 {
-    os<<"trust display"<<endl;
-    return os;
+    public:
+    virtual void print(ostream& os) const override
+    {
+        os<<"Woof woof"<<endl;
+    }
+    virtual ~dog()
+    {
+        cout<<"~Dog destructor"<<endl;
+    }
+};
+
+void print(const I_printable &obj)
+{
+    cout<<obj<<endl;
 }
 
 int main()
@@ -98,10 +117,17 @@ int main()
 
     account *p1 = new account();
     cout<<*p1<<endl;
-    p1->withdraw(1000);
+    // p1->withdraw(1000);
 
     account *p2 = new checking();
     cout<<*p2<<endl;
-    p2->withdraw(2000);
+    // p2->withdraw(2000);
 
+    dog *dog_object = new dog();
+    cout<<*dog_object<<endl;
+    print(*dog_object);
+
+    delete p1;
+    delete p2;
+    delete dog_object;
 }
